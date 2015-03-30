@@ -19,6 +19,7 @@ import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.RDFNode;
+import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.tdb.TDBFactory;
 
 public class RDFConnection
@@ -215,5 +216,68 @@ public class RDFConnection
 		String string = new String(all);		
 		input.close();
 		return string;
+	}
+	
+	public String expand(String in)
+	{
+		return localDb.expandPrefix(in);
+	}
+	
+	public void add(String subj,String pred,String obj)
+	{
+		synchronized(this)
+		{
+		  this.localDb.add(this.localDb.createResource(expand(subj)),this.localDb.createProperty(expand(pred)),this.localDb.createResource(expand(obj)));
+		}
+	}
+	public void addLit(String subj,String pred,String obj)
+	{
+		synchronized(this)
+		{
+  		this.localDb.add(this.localDb.createResource(expand(subj)),this.localDb.createProperty(expand(pred)),this.localDb.createTypedLiteral(obj));
+		}
+	}
+	public void add(String subj,String pred,int val)
+	{
+		synchronized(this)
+		{
+		  this.localDb.add(this.localDb.createResource(expand(subj)),this.localDb.createProperty(expand(pred)),this.localDb.createTypedLiteral(val));
+	  }
+	}
+	public void add(String subj,String pred,boolean val)
+	{
+		synchronized(this)
+		{
+		  this.localDb.add(this.localDb.createResource(expand(subj)),this.localDb.createProperty(expand(pred)),this.localDb.createTypedLiteral(val));
+	  }	
+	}
+	public void add(String subj,String pred,float val)
+	{
+		synchronized(this)
+		{
+		  this.localDb.add(this.localDb.createResource(expand(subj)),this.localDb.createProperty(expand(pred)),this.localDb.createTypedLiteral(val));
+ 	  }
+	}
+	public void add(String subj,String pred,double val)
+	{
+		synchronized(this)
+		{
+		  this.localDb.add(this.localDb.createResource(expand(subj)),this.localDb.createProperty(expand(pred)),this.localDb.createTypedLiteral(val));
+  	}	
+	}
+	
+	/*public boolean bgp(String subj,String pred,String obj)
+	{
+		
+	}*/
+	
+	public PrefixMapping setNsPrefix(String prefix,String iri)
+	{
+		return this.localDb.setNsPrefix(prefix,iri);
+	}
+	
+	public void close()
+	{
+		this.localDb.close();
 	}
 }
