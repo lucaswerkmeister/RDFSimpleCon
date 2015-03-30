@@ -164,7 +164,24 @@ public class RDFConnection
 		this.threadMap.put(threadId,newCount);
 		return newCount + this.port;
 	}
-	
+
+	public LinkedList<HashMap<String, RDFNode>> runQueryToMap(String queryFile, Object... args) throws Exception
+	{
+		queryFile = "queries/" + queryFile;
+		QueryExecution qe = createQuery(queryFile,args);
+		long millis = System.currentTimeMillis();
+		ResultSet result = qe.execSelect();
+		Iterable<HashMap<String, RDFNode>> walker = new Iteration<HashMap<String, RDFNode>>(new ResultIterator(result));
+		LinkedList<HashMap<String, RDFNode>> res = new LinkedList<HashMap<String, RDFNode>>();
+		for (HashMap<String, RDFNode> item : walker)
+		{
+			res.add(item);
+		}
+		qe.close();
+		System.out.println("time: " + (System.currentTimeMillis() - millis) + " for query " + queryFile);
+		return res;		
+	}
+
 	public Iterable<HashMap<String,RDFNode>> runQuery(String queryFile,boolean preload,Object ... args) throws Exception
 	{
 		queryFile = "queries/" + queryFile;
