@@ -10,6 +10,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.jena.atlas.web.auth.SimpleAuthenticator;
+import org.apache.jena.riot.RDFDataMgr;
 
 import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.query.Query;
@@ -35,7 +36,7 @@ public class RDFConnection
 	private HashMap<Long,Integer> threadMap = new HashMap<Long,Integer>();
 	private int maxThreadCount = 1;
 	
-	public RDFConnection(String config) throws Exception
+	public RDFConnection(String config, String tmpDir) throws Exception
 	{
 		try
 		{
@@ -47,13 +48,31 @@ public class RDFConnection
 	  	  config = temp.group(1);
 	  	  graph = temp.group(2);
 	    }
-			if(config.startsWith("file://"))
+	    if(config.isEmpty())
+	    {
+	    	Dataset dataset = createEmptyStore(tmpDir);
+			  if(graph == null)
+				  localDb = dataset.getDefaultModel();
+			  else
+				  localDb = dataset.getNamedModel(graph);
+	    }
+	    else if(config.startsWith("file://"))
 			{
-				Dataset dataset = TDBFactory.createDataset(config.substring("file://".length()));
-				if(graph == null)
-					localDb = dataset.getDefaultModel();
+				File file = new File(config.substring("file://".length()));
+			  Dataset dataset = null;
+				if(file.isDirectory())
+				{
+				  dataset = TDBFactory.createDataset(file.toString());
+				}
 				else
-					localDb = dataset.getNamedModel(graph);
+				{
+					dataset = createEmptyStore(tmpDir);
+					RDFDataMgr.read(dataset,file.toString());
+				}
+			  if(graph == null)
+				  localDb = dataset.getDefaultModel();
+			  else
+				  localDb = dataset.getNamedModel(graph);
 			}
 			else
 			{
@@ -83,16 +102,28 @@ public class RDFConnection
 		}	  
 	}
 	
-	public RDFConnection(String dir,String graph,boolean local)
+	private Dataset createEmptyStore(String tmpDir)
+	{
+  	if(tmpDir == null)
+  		return TDBFactory.createDataset();
+  	else
+  		return TDBFactory.createDataset(tmpDir);
+	}
+	public RDFConnection(String config) throws Exception
+	{
+		this(config,null);
+	}
+	
+	/*public RDFConnection(String dir,String graph,boolean local)
 	{
 		Dataset dataset = TDBFactory.createDataset(dir);
-		localDb = dataset.getNamedModel("http://ssb.wur.nl/RDF2Graph/");
+		localDb = dataset.getNamedModel(graph);
 	}
 	
 	public RDFConnection(String server,String graph)
 	{
     this.setServerGraph(server,graph);
-	}
+	}*/
 	
 	private void setServerGraph(String server,String graph)
 	{
@@ -166,27 +197,27 @@ public class RDFConnection
 		return newCount + this.port;
 	}
 	
-	public Iterable<HashMap<String,RDFNode>> runQuery(String queryFile,boolean preload,Object ... args) throws Exception
+	public Iterable<ResultLine> runQuery(String queryFile,boolean preload,Object ... args) throws Exception
 	{
 		queryFile = "queries/" + queryFile;
 		QueryExecution qe = createQuery(queryFile,args);
 		long millis = System.currentTimeMillis();
 		ResultSet result = qe.execSelect();
-		Iterable<HashMap<String,RDFNode>> walker = new Iteration<HashMap<String,RDFNode>>(new ResultIterator(result));
+		ResultIteratorRaw walker = new ResultIteratorRaw(result);// new Iteration<HashMap<String,RDFNode>>
 		if(preload == false)
 		{
-			return walker;
+			return new Iteration<ResultLine>(new ResultIterator(new Iteration<HashMap<String,RDFNode>>(walker)));
 		}
 		else
 		{
 			LinkedList<HashMap<String,RDFNode>> res = new LinkedList<HashMap<String,RDFNode>>();
-			for(HashMap<String,RDFNode> item : walker)
+			for(HashMap<String,RDFNode> item : new Iteration<HashMap<String,RDFNode>>(walker))
 			{
 				res.add(item);
 			}
 			qe.close();
 			System.out.println("time: " + (System.currentTimeMillis() - millis) + " for query " + queryFile); 
-			return new Iteration<HashMap<String,RDFNode>>(res.iterator());
+			return new Iteration<ResultLine>(new ResultIterator(new Iteration<HashMap<String,RDFNode>>(res.iterator())));
 		}
 	}
 	

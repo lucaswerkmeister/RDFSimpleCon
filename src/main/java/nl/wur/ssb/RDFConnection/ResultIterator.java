@@ -3,17 +3,15 @@ package nl.wur.ssb.RDFConnection;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import com.hp.hpl.jena.query.QuerySolution;
-import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.rdf.model.RDFNode;
 
-public class ResultIterator implements Iterator<HashMap<String,RDFNode>>
+public class ResultIterator implements Iterator<ResultLine>
 {
-	private ResultSet resultSet;
+	private Iterator<HashMap<String,RDFNode>> resultSet;
 
-	public ResultIterator(ResultSet resultSet)
+	public ResultIterator(Iteration<HashMap<String,RDFNode>> resultSet)
 	{
-		this.resultSet = resultSet;
+		this.resultSet = resultSet.iterator();
 	}
 
 	@Override
@@ -23,15 +21,9 @@ public class ResultIterator implements Iterator<HashMap<String,RDFNode>>
 	}
 
 	@Override
-	public HashMap<String,RDFNode> next()
+	public ResultLine next()
 	{
-		QuerySolution sol = resultSet.next();
-		HashMap<String,RDFNode> map = new HashMap<String,RDFNode>();
-		for(String name : new Iteration<String>(sol.varNames()))
-		{
-			map.put(name,sol.get(name));
-		}
-		return map;
+		return new ResultLine(resultSet.next());
 	}
 
 	@Override
