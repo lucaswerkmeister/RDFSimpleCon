@@ -23,6 +23,8 @@ import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.tdb.TDBFactory;
 
+
+
 public class RDFConnection
 {
 	private Model localDb;
@@ -196,7 +198,24 @@ public class RDFConnection
 		this.threadMap.put(threadId,newCount);
 		return newCount + this.port;
 	}
-	
+
+	public LinkedList<ResultLine> runQueryToMap(String queryFile, Object... args) throws Exception
+	{
+		queryFile = "queries/" + queryFile;
+		QueryExecution qe = createQuery(queryFile,args);
+		long millis = System.currentTimeMillis();
+		ResultSet result = qe.execSelect();
+		Iterable<HashMap<String, RDFNode>> walker = new Iteration<HashMap<String, RDFNode>>(new ResultIteratorRaw(result));
+		LinkedList<ResultLine> res = new LinkedList<ResultLine>();
+		for (HashMap<String, RDFNode> item : walker)
+		{
+			res.add(new ResultLine(item));
+		}
+		qe.close();
+		System.out.println("time: " + (System.currentTimeMillis() - millis) + " for query " + queryFile);
+		return res;		
+	}
+
 	public Iterable<ResultLine> runQuery(String queryFile,boolean preload,Object ... args) throws Exception
 	{
 		queryFile = "queries/" + queryFile;

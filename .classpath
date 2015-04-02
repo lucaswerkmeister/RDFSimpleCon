@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src/main/java"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="/home/jesse/programs/jena/lib/jena-sdb-1.5.0.jar"/>
 	<classpathentry kind="lib" path="/home/jesse/programs/jena/lib/jena-tdb-1.1.0.jar" sourcepath="/home/jesse/.m2/repository/org/apache/jena/jena-tdb/1.1.0/jena-tdb-1.1.0-sources.jar"/>
 	<classpathentry kind="lib" path="/home/jesse/programs/jena/lib/jena-arq-2.12.0.jar" sourcepath="/home/jesse/.m2/repository/org/apache/jena/jena-arq/2.12.0/jena-arq-2.12.0-sources.jar"/>
 	<classpathentry kind="lib" path="/home/jesse/programs/jena/lib/jena-core-2.12.0.jar" sourcepath="/home/jesse/.m2/repository/org/apache/jena/jena-core/2.12.0/jena-core-2.12.0-sources.jar"/>
