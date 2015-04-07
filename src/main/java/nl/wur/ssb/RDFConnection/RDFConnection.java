@@ -1,8 +1,11 @@
 package nl.wur.ssb.RDFConnection;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.concurrent.TimeUnit;
@@ -330,4 +333,23 @@ public class RDFConnection
 	{
 		this.localDb.close();
 	}
+	
+	public Model getModel()
+	{
+		return this.localDb;
+	}
+	 
+	public void save(String file) throws IOException
+	{
+	  this.save(file,RDFFormat.TURTLE);
+	}
+	
+	public void save(String file,RDFFormat format) throws IOException
+	{
+		//"RDF/XML", "RDF/XML-ABBREV", "N-TRIPLE", "TURTLE", (and "TTL") and "N3
+		OutputStream out = new BufferedOutputStream(new FileOutputStream(file));
+		this.localDb.write(out,format.toString());
+		out.close();
+	}
+	
 }
