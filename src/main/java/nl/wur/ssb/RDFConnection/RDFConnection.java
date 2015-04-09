@@ -1,10 +1,12 @@
 package nl.wur.ssb.RDFConnection;
 
 import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -262,13 +264,20 @@ public class RDFConnection
 	
 	private String readFile(String file) throws IOException
 	{
-		File inFile = new File(file);
-		FileInputStream input = new FileInputStream(inFile);
-		byte all[] = new byte[(int)inFile.length()];
-		input.read(all);
-		String string = new String(all);		
-		input.close();
-		return string;
+		File inFile = new File("resource/" + file);
+		InputStream stream = null;
+		if(inFile.exists())
+			stream = new FileInputStream(inFile);
+		else
+			stream = this.getClass().getResourceAsStream("/" + file);
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    byte[] buffer = new byte[1024];
+    int length = 0;
+    while ((length = stream.read(buffer)) != -1) {
+        baos.write(buffer, 0, length);
+    }
+    stream.close();
+    return new String(baos.toByteArray());
 	}
 	
 	public String expand(String in)
