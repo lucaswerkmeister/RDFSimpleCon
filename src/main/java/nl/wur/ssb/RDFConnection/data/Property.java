@@ -10,8 +10,8 @@ public class Property
 	{
 		//this.domain = domain;
 		this.iri = domain.getConn().expand(iri);
-		domain.addProperty(iri,this);
-		domain.getConn().add(iri,"rdf:type","rdf:Property");
+		domain.addProperty(this.iri,this);
+		domain.getConn().add(this.iri,"rdf:type","rdf:Property");
 	}
 	
 	public String getRDFString()
