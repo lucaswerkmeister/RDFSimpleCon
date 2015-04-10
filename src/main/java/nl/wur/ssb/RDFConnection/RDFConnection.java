@@ -1,9 +1,7 @@
 package nl.wur.ssb.RDFConnection;
 
 import java.io.BufferedOutputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,6 +12,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import nl.wur.ssb.util.Util;
+
+import org.apache.commons.vfs2.FileObject;
 import org.apache.jena.atlas.web.auth.SimpleAuthenticator;
 import org.apache.jena.riot.RDFDataMgr;
 
@@ -264,20 +265,13 @@ public class RDFConnection
 	
 	private String readFile(String file) throws IOException
 	{
-		File inFile = new File("resource/" + file);
-		InputStream stream = null;
-		if(inFile.exists())
-			stream = new FileInputStream(inFile);
-		else
-			stream = this.getClass().getResourceAsStream("/" + file);
-    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-    byte[] buffer = new byte[1024];
-    int length = 0;
-    while ((length = stream.read(buffer)) != -1) {
-        baos.write(buffer, 0, length);
-    }
-    stream.close();
-    return new String(baos.toByteArray());
+		FileObject inFile = Util.getResourceFile(file);
+		InputStream input = inFile.getContent().getInputStream();
+		byte all[] = new byte[(int)inFile.getContent().getSize()];
+		input.read(all);
+		String string = new String(all);		
+		input.close();
+		return string;
 	}
 	
 	public String expand(String in)
