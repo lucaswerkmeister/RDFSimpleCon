@@ -66,7 +66,17 @@ public class RDFConnection
 	    }
 	    else if(config.startsWith("file://"))
 			{
-				File file = new File(config.substring("file://".length()));
+	    	String fileName = config.substring("file://".length());
+	    	RDFFormat fileFormat = null;
+		    if(config.indexOf("{") != -1)
+		    {
+		  	  Matcher temp = Pattern.compile("(.*)\\{(.*)\\}").matcher(fileName);
+		  	  if(temp.matches() == false)
+		  	  	throw new Exception("invalid config string: " + config);
+		  	  fileName = temp.group(1);
+		  	  fileFormat = RDFFormat.getFormat(temp.group(2));
+		    }
+				File file = new File(fileName);
 			  Dataset dataset = null;
 				if(file.isDirectory())
 				{
@@ -75,7 +85,7 @@ public class RDFConnection
 				else
 				{
 					dataset = createEmptyStore(tmpDir);
-					RDFDataMgr.read(dataset,file.toString());
+					RDFDataMgr.read(dataset,file.toString(),fileFormat != null ? fileFormat.getLang() : null);
 				}
 			  if(graph == null)
 				  localDb = dataset.getDefaultModel();
@@ -247,6 +257,7 @@ public class RDFConnection
 	}
 	
 	private Query getQuery(String file,Object ... args)
+	
 	{
 		try
 		{
