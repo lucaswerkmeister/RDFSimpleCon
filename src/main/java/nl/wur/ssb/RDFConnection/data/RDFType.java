@@ -11,8 +11,8 @@ public class RDFType
 	{
 		this.domain = domain;
 		this.iri = domain.getConn().expand(iri);
-		domain.addType(iri,this);
-		domain.getConn().add(iri,"rdf:type","owl:Class");
+		domain.addType(this.iri,this);
+		domain.getConn().add(this.iri,"rdf:type","owl:Class");
 	}
 	
 	public void addSubClassOf(RDFType type)

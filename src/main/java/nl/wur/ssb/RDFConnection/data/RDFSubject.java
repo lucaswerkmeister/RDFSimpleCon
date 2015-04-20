@@ -1,12 +1,12 @@
 package nl.wur.ssb.RDFConnection.data;
 
 
-public class RDFObject
+public class RDFSubject
 {
 	private String iri; 
 	private Domain domain;
 	//private RDFType type;
-	public RDFObject(Domain domain,String iri,RDFType type)
+	public RDFSubject(Domain domain,String iri,RDFType type)
 	{
 		this.iri = iri;
 		this.domain = domain;
@@ -14,15 +14,15 @@ public class RDFObject
 		
 		domain.getConn().add(iri,"rdf:type",type.getRDFString());
 	}
-	public RDFObject(Domain domain,String iri,String type)
+	public RDFSubject(Domain domain,String iri,String type)
 	{
 		this(domain,iri,domain.getType(type));
 	}
-	public void add(Property prop,RDFObject object)
+	public void add(Property prop,RDFSubject object)
 	{
 		this.domain.getConn().add(this.iri,prop.getRDFString(),object.iri);
 	}
-	public void add(String prop,RDFObject object)
+	public void add(String prop,RDFSubject object)
 	{
 		this.add(domain.getProperty(prop),object);
 	}
