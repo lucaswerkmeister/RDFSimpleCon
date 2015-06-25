@@ -1,4 +1,4 @@
-package nl.wur.ssb.RDFConnection.concurrent;
+package nl.wur.ssb.RDFSimpleCon.concurrent;
 
 public interface Task
 {

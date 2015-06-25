@@ -1,4 +1,4 @@
-package nl.wur.ssb.RDFConnection;
+package nl.wur.ssb.RDFSimpleCon;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -30,7 +30,7 @@ import com.hp.hpl.jena.update.UpdateAction;
 
 
 
-public class RDFConnection
+public class RDFSimpleCon
 {
 	private Model localDb;
 	private String server;
@@ -43,7 +43,7 @@ public class RDFConnection
 	private HashMap<Long,Integer> threadMap = new HashMap<Long,Integer>();
 	private int maxThreadCount = 1;
 	
-	public RDFConnection(String config, String tmpDir) throws Exception
+	public RDFSimpleCon(String config, String tmpDir) throws Exception
 	{
 		try
 		{
@@ -132,12 +132,12 @@ public class RDFConnection
   	else
   		return TDBFactory.createDataset(tmpDir);
 	}
-	public RDFConnection(String config) throws Exception
+	public RDFSimpleCon(String config) throws Exception
 	{
 		this(config,null);
 	}
 	
-	public RDFConnection(FileObject file,RDFFormat format) throws IOException
+	public RDFSimpleCon(FileObject file,RDFFormat format) throws IOException
 	{
 		Dataset dataset = createEmptyStore(null);
 		RDFDataMgr.read(dataset,file.getContent().getInputStream(),format.getLang());		
@@ -418,7 +418,7 @@ public class RDFConnection
 		}  	
   }
 	
-	public void addAll(RDFConnection other)
+	public void addAll(RDFSimpleCon other)
 	{		
 		this.localDb.add(other.localDb.listStatements());
 	}

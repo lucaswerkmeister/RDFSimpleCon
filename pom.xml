@@ -1,8 +1,8 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
  <modelVersion>4.0.0</modelVersion>
- <groupId>nl.wur.ssb.RDFConnection</groupId>
- <artifactId>RDFConnection</artifactId>
+ <groupId>nl.wur.ssb.RDFSimpleCon</groupId>
+ <artifactId>RDFSimpleCon</artifactId>
  <version>0.1</version>
  <packaging>jar</packaging>
  <name>RDF helper library</name>
@@ -37,9 +37,6 @@
            <descriptorRef>jar-with-dependencies</descriptorRef>
          </descriptorRefs>
          <archive>
-           <manifest>
-             <mainClass>nl.wur.ssb.RDF2Graph.Main</mainClass>
-           </manifest>
          </archive>
        </configuration>
        <executions>

@@ -1,6 +1,6 @@
-package nl.wur.ssb.RDFConnection.data;
+package nl.wur.ssb.RDFSimpleCon.data;
 
-import nl.wur.ssb.RDFConnection.RDFConnection;
+import nl.wur.ssb.RDFSimpleCon.RDFSimpleCon;
 
 public class Property
 {

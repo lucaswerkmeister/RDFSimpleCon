@@ -1,4 +1,4 @@
-package nl.wur.ssb.RDFConnection;
+package nl.wur.ssb.RDFSimpleCon;
 
 import org.apache.jena.riot.Lang;
 

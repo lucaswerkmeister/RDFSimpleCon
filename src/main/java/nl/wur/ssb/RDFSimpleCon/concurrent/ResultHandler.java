@@ -1,6 +1,6 @@
-package nl.wur.ssb.RDFConnection.concurrent;
+package nl.wur.ssb.RDFSimpleCon.concurrent;
 
-import nl.wur.ssb.RDFConnection.ResultLine;
+import nl.wur.ssb.RDFSimpleCon.ResultLine;
 
 public interface ResultHandler
 {

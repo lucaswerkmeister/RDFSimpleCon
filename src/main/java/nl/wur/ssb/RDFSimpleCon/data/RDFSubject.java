@@ -1,4 +1,4 @@
-package nl.wur.ssb.RDFConnection.data;
+package nl.wur.ssb.RDFSimpleCon.data;
 
 
 public class RDFSubject

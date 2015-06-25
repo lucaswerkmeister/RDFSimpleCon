@@ -1,19 +1,19 @@
-package nl.wur.ssb.RDFConnection.data;
+package nl.wur.ssb.RDFSimpleCon.data;
 
 import java.util.HashMap;
 
-import nl.wur.ssb.RDFConnection.RDFConnection;
+import nl.wur.ssb.RDFSimpleCon.RDFSimpleCon;
 
 public class Domain
 {
-	private RDFConnection conn;
+	private RDFSimpleCon conn;
 	private HashMap<String,Property> propMap = new HashMap<String,Property>();	
 	private HashMap<String,RDFType> typeMap = new HashMap<String,RDFType>();
-	public Domain(RDFConnection conn)
+	public Domain(RDFSimpleCon conn)
 	{
 		this.conn = conn;
 	}
-	public RDFConnection getConn()
+	public RDFSimpleCon getConn()
 	{
 		return this.conn;
 	}

@@ -1,4 +1,4 @@
-package nl.wur.ssb.RDFConnection;
+package nl.wur.ssb.RDFSimpleCon;
 
 import java.util.HashMap;
 import java.util.Iterator;

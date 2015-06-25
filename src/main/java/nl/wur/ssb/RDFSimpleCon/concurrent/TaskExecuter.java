@@ -1,4 +1,4 @@
-package nl.wur.ssb.RDFConnection.concurrent;
+package nl.wur.ssb.RDFSimpleCon.concurrent;
 
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
@@ -6,7 +6,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-import nl.wur.ssb.RDFConnection.ResultLine;
+import nl.wur.ssb.RDFSimpleCon.ResultLine;
 
 public class TaskExecuter
 {

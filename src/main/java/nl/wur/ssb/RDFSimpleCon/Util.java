@@ -1,4 +1,4 @@
-package nl.wur.ssb.RDFConnection;
+package nl.wur.ssb.RDFSimpleCon;
 
 import java.io.IOException;
 import java.net.URL;
