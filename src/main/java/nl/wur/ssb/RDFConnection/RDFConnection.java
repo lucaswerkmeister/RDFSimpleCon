@@ -12,8 +12,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import nl.wur.ssb.util.Util;
-
 import org.apache.commons.vfs2.FileObject;
 import org.apache.jena.atlas.web.auth.SimpleAuthenticator;
 import org.apache.jena.riot.RDFDataMgr;
@@ -28,6 +26,7 @@ import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.tdb.TDBFactory;
+import com.hp.hpl.jena.update.UpdateAction;
 
 
 
@@ -112,12 +111,18 @@ public class RDFConnection
 		    setServerGraph(server,graph);
 		    if(username != null)
 		    	this.setAuthen(username,pass);
+		    //only used for prefixes
+		    Dataset dataset = createEmptyStore(tmpDir);
+		    localDb = dataset.getDefaultModel();
 			}
 		}
 		catch(Throwable th)
 		{
 			throw new Exception("invalid config string: " + config,th);
 		}	  
+		this.setNsPrefix("rdf","http://www.w3.org/1999/02/22-rdf-syntax-ns#");
+		this.setNsPrefix("rdfs","http://www.w3.org/2000/01/rdf-schema#");
+		this.setNsPrefix("owl","http://www.w3.org/2002/07/owl#");	
 	}
 	
 	private Dataset createEmptyStore(String tmpDir)
@@ -130,6 +135,12 @@ public class RDFConnection
 	public RDFConnection(String config) throws Exception
 	{
 		this(config,null);
+	}
+	
+	public RDFConnection(FileObject file,RDFFormat format) throws IOException
+	{
+		Dataset dataset = createEmptyStore(null);
+		RDFDataMgr.read(dataset,file.getContent().getInputStream(),format.getLang());		
 	}
 	
 	/*public RDFConnection(String dir,String graph,boolean local)
@@ -287,7 +298,10 @@ public class RDFConnection
 	
 	public String expand(String in)
 	{
-		return localDb.expandPrefix(in);
+		String toRet = localDb.expandPrefix(in);
+		if(!toRet.startsWith("http"))
+			throw new RuntimeException("prefix not expanded: " + in);
+		return toRet;
 	}
 	
 	public void add(String subj,String pred,String obj)
@@ -333,6 +347,28 @@ public class RDFConnection
   	}	
 	}
 	
+	public boolean contains(String subj,String pred)
+	{
+		synchronized(this)
+		{
+		  return this.localDb.contains(this.localDb.createResource(expand(subj)),this.localDb.createProperty(expand(pred)));
+	  }
+	}
+	public boolean containsLit(String subj,String pred,String lit)
+	{
+		synchronized(this)
+		{
+		  return this.localDb.contains(this.localDb.createResource(expand(subj)),this.localDb.createProperty(expand(pred)),this.localDb.createTypedLiteral(lit));
+	  }
+	}
+	public boolean containsLit(String subj,String pred,int lit)
+	{
+		synchronized(this)
+		{
+		  return this.localDb.contains(this.localDb.createResource(expand(subj)),this.localDb.createProperty(expand(pred)),this.localDb.createTypedLiteral(lit));
+		}
+	}
+	
 	/*public boolean bgp(String subj,String pred,String obj)
 	{
 		
@@ -366,4 +402,37 @@ public class RDFConnection
 		out.close();
 	}
 	
+  public void runUpdateQuery(String file,Object ...args)
+  {
+		try
+		{
+			String header = this.readFile("queries/header.txt");
+			String content = this.readFile("queries/local/" + file);
+			String query = header + content;
+			query = String.format(query,args);		
+			UpdateAction.parseExecute(query, this.localDb);
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}  	
+  }
+	
+	public void addAll(RDFConnection other)
+	{		
+		this.localDb.add(other.localDb.listStatements());
+	}
+	
 }
+
+
+
+
+
+
+
+
+
+
+
+
