@@ -14,8 +14,8 @@ public class Util
 		URL url = Util.class.getClassLoader().getResource(".");
 		if(url == null)
 		{
-   		uri = Util.class.getClassLoader().getResource("nl/wur/ssb/util/Util.class").toString();
-			uri = uri.substring(0,uri.length() - "nl/wur/ssb/util/Util.class".length());
+   		uri = Util.class.getClassLoader().getResource("nl/wur/ssb/RDFSimpleCon/Util.class").toString();
+			uri = uri.substring(0,uri.length() - "nl/wur/ssb/RDFSimpleCon/Util.class".length());
 		}
 		else
 			uri = url.toString();
