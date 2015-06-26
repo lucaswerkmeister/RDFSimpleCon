@@ -5,7 +5,7 @@ import org.apache.jena.riot.Lang;
 public enum RDFFormat
 {
 	//"RDF/XML", "RDF/XML-ABBREV", "N-TRIPLE", "TURTLE", (and "TTL") and "N3
-	RDF_XML, RDF_XML_ABBREV, N_TRIPLE, TURTLE, N3;
+	RDF_XML, RDF_XML_ABBREV, N_TRIPLE, TURTLE, N3, JSONLD;
 	
 	public String toString()
 	{
@@ -15,6 +15,7 @@ public enum RDFFormat
 			case N_TRIPLE: return "N-TRIPLE";
 			case TURTLE: return "TURTLE";
 			case N3: return "N3";
+			case JSONLD: return "JSON-LD";
 		}
 		return "null";
 	}
@@ -27,22 +28,25 @@ public enum RDFFormat
 			case N_TRIPLE: return Lang.NT;
 			case TURTLE: return Lang.TURTLE;
 			case N3: return Lang.N3;
+			case JSONLD: return Lang.JSONLD;
 		}
 		return null;	
 	}
 	
 	public static RDFFormat getFormat(String in)
 	{
-		if(in.equals("RDF/XML"))
+		if(in.equals("RDF/XML") || in.toLowerCase().equals("rdf"))
 			return RDF_XML;
 		if(in.equals("RDF/XML-ABBREV"))
 			return RDF_XML_ABBREV;
-		if(in.equals("N-TRIPLE"))
+		if(in.equals("N-TRIPLE") || in.toLowerCase().equals("nt"))
 			return N_TRIPLE;
-		if(in.equals("TURTLE"))
+		if(in.equals("TURTLE") || in.toLowerCase().equals("ttl"))
 			return TURTLE;
-		if(in.equals("N3"))
+		if(in.equals("N3") || in.toLowerCase().equals("n3"))
 			return N3;		
+		if(in.equals("JSON-LD") || in.toLowerCase().equals("jsonld"))
+			return JSONLD;		
 	  throw new RuntimeException("Unknow rdf format: " + in);
 	}
 
