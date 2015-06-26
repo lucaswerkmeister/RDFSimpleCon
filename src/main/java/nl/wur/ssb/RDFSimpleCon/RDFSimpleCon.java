@@ -188,13 +188,21 @@ public class RDFSimpleCon
 	private QueryExecution createQuery(String queryFile,Object ... args)  throws Exception
 	{
     Object toPass[] = args;
- //   if(this.server != null)
-  //  {
-    	toPass = new Object[args.length + 1];
+    
+		String header = this.readFile("queries/header.txt");
+		String content = this.readFile(queryFile);
+		String queryString = header + content;
+		 
+    if(Pattern.compile("^((FROM)|(WITH)|(USING))\\s+<\\%\\d+\\$S>.*$",Pattern.MULTILINE).matcher(queryString.toUpperCase()).find())
+    {
+     	toPass = new Object[args.length + 1];
       System.arraycopy(args,0,toPass,1,args.length);
       toPass[0] = this.graph;
-   // }
-	  Query query = this.getQuery(queryFile,toPass);
+      args = toPass;
+    }
+    queryString = String.format(queryString,args);			
+	
+	  Query query = QueryFactory.create(queryString);
 	
 		if(this.server != null)
 		{
@@ -266,25 +274,7 @@ public class RDFSimpleCon
 			return new Iteration<ResultLine>(new ResultIterator(new Iteration<HashMap<String,RDFNode>>(res.iterator())));
 		}
 	}
-	
-	private Query getQuery(String file,Object ... args)
-	
-	{
-		try
-		{
-			String header = this.readFile("queries/header.txt");
-			String content = this.readFile(file);
-			String query = header + content;
-			query = String.format(query,args);			
-			return QueryFactory.create(query);
-		}
-		catch (IOException e)
-		{
-			e.printStackTrace();
-		}
-		return null;
-	}
-	
+		
 	private String readFile(String file) throws IOException
 	{
 		FileObject inFile = Util.getResourceFile(file);
