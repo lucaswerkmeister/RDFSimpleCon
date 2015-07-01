@@ -95,7 +95,6 @@ public class RDFSimpleCon
 			{
 			  String username = null;
 			  String pass = null;
-			  String graph = "";
 		    if(config.indexOf("@") != -1)
 		    {
 		    	String temp[] = config.split("@");
@@ -107,8 +106,21 @@ public class RDFSimpleCon
 		  	  config = temp[1];
 		    }
 
-		    String server = config;
-		    setServerGraph(server,graph);
+				Matcher matcher = Pattern.compile("http://(.+):([\\d]+)/(.*)").matcher(config);
+				if(!matcher.matches())
+				{
+					matcher = Pattern.compile("http://(.+)/(.*)").matcher(config);
+					matcher.matches();
+					this.server = matcher.group(1);
+					this.port = 80;
+					this.finalLocation = matcher.group(2);
+				}
+				else
+				{
+					this.server = matcher.group(1);
+					this.port = Integer.parseInt(matcher.group(2));
+					this.finalLocation = matcher.group(3);
+				}
 		    if(username != null)
 		    	this.setAuthen(username,pass);
 		    //only used for prefixes
@@ -153,26 +165,6 @@ public class RDFSimpleCon
 	{
     this.setServerGraph(server,graph);
 	}*/
-	
-	private void setServerGraph(String server,String graph)
-	{
-		Matcher matcher = Pattern.compile("http://(.+):([\\d]+)/(.*)").matcher(server);
-		if(!matcher.matches())
-		{
-			matcher = Pattern.compile("http://(.+)/(.*)").matcher(server);
-			matcher.matches();
-			this.server = matcher.group(1);
-			this.port = 80;
-			this.finalLocation = matcher.group(2);
-		}
-		else
-		{
-			this.server = matcher.group(1);
-			this.port = Integer.parseInt(matcher.group(2));
-			this.finalLocation = matcher.group(3);
-		}
-		this.graph = graph;
-	}
 	
 	public void enableEachThreadSeperatePort(int threadCount)
 	{
