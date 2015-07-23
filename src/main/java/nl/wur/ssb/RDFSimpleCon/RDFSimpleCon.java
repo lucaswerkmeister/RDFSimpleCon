@@ -177,7 +177,7 @@ public class RDFSimpleCon
   	authen = new SimpleAuthenticator(user,pass.toCharArray());
   }
 	
-	private QueryExecution createQuery(String queryFile,Object ... args)  throws Exception
+	private QueryExecution createQueryFromFile(String queryFile,Object ... args)  throws Exception
 	{
     Object toPass[] = args;
     
@@ -193,9 +193,12 @@ public class RDFSimpleCon
       args = toPass;
     }
     queryString = String.format(queryString,args);			
+	  return createQuery(queryString);
+	}
 	
-	  Query query = QueryFactory.create(queryString);
-	
+	private QueryExecution createQuery(String queryString)  throws Exception
+	{
+		Query query = QueryFactory.create(queryString);
 		if(this.server != null)
 		{
 	    int port = this.port;
@@ -229,7 +232,7 @@ public class RDFSimpleCon
 	public LinkedList<ResultLine> runQueryToMap(String queryFile, Object... args) throws Exception
 	{
 		queryFile = "queries/" + queryFile;
-		QueryExecution qe = createQuery(queryFile,args);
+		QueryExecution qe = createQueryFromFile(queryFile,args);
 		long millis = System.currentTimeMillis();
 		ResultSet result = qe.execSelect();
 		Iterable<HashMap<String, RDFNode>> walker = new Iteration<HashMap<String, RDFNode>>(new ResultIteratorRaw(result));
@@ -245,8 +248,8 @@ public class RDFSimpleCon
 
 	public Iterable<ResultLine> runQuery(String queryFile,boolean preload,Object ... args) throws Exception
 	{
-		queryFile = "queries/" + queryFile;
-		QueryExecution qe = createQuery(queryFile,args);
+	  queryFile = "queries/" + queryFile;
+		QueryExecution qe = createQueryFromFile(queryFile,args);
 		long millis = System.currentTimeMillis();
 		ResultSet result = qe.execSelect();
 		ResultIteratorRaw walker = new ResultIteratorRaw(result);// new Iteration<HashMap<String,RDFNode>>
@@ -265,6 +268,12 @@ public class RDFSimpleCon
 			System.out.println("time: " + (System.currentTimeMillis() - millis) + " for query " + queryFile); 
 			return new Iteration<ResultLine>(new ResultIterator(new Iteration<HashMap<String,RDFNode>>(res.iterator())));
 		}
+	}
+	
+	public ResultSet runQueryDirect(String query) throws Exception
+	{
+		QueryExecution qe = createQuery(query);
+		return qe.execSelect();
 	}
 		
 	private String readFile(String file) throws IOException
@@ -297,7 +306,7 @@ public class RDFSimpleCon
 	{
 		synchronized(this)
 		{
-  		this.localDb.add(this.localDb.createResource(expand(subj)),this.localDb.createProperty(expand(pred)),this.localDb.createTypedLiteral(obj));
+  		this.localDb.add(this.localDb.createResource(expand(subj)),this.localDb.createProperty(expand(pred)),this.localDb.createLiteral(obj));
 		}
 	}
 	public void add(String subj,String pred,int val)
