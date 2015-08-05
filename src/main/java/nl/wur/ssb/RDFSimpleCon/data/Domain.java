@@ -20,10 +20,16 @@ public class Domain
 	
 	public void addProperty(String iri,Property prop) 
 	{
-		if(this.propMap.containsKey(iri))
+	  this.addProperty(iri, prop,true);
+	}
+	
+	public void addProperty(String iri,Property prop,boolean docheck) 
+	{
+		if(docheck && this.propMap.containsKey(iri))
 			throw new RuntimeException("Property " + iri + " already defined");
 		this.propMap.put(iri,prop);
 	}
+	
 	public Property getProperty(String iri)
 	{
 		iri = this.getConn().expand(iri);
@@ -34,10 +40,16 @@ public class Domain
 	
 	public void addType(String iri,RDFType type) 
 	{
-		if(this.typeMap.containsKey(iri))
+		this.addType(iri, type,true);
+	}
+	
+	public void addType(String iri,RDFType type,boolean check) 
+	{
+		if(check && this.typeMap.containsKey(iri))
 			throw new RuntimeException("Type " + iri + " already defined");
 		this.typeMap.put(iri,type);
 	}
+	
 	public RDFType getType(String iri)
 	{
 		iri = this.getConn().expand(iri);
