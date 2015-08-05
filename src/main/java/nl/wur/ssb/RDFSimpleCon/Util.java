@@ -22,6 +22,8 @@ public class Util
 		//uri = uri.substring(0,uri.length() - "nl/wur/ssb/util/Util.class".length());
 		if(uri.endsWith("bin/"))
 			uri = uri.substring(0,uri.length() - "bin/".length()) + "resource/";
+		if(uri.endsWith("target/test-classes/"))
+			uri = uri.substring(0,uri.length() - "target/test-classes/".length()) + "resource/";
 		uri = uri + file;
 		/*
 		FileObject[] children = jarFile.getChildren();
