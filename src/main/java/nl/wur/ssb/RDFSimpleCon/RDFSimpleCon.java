@@ -398,7 +398,7 @@ public class RDFSimpleCon
 		try
 		{
 			String header = this.readFile("queries/header.txt");
-			String content = this.readFile("queries/local/" + file);
+			String content = this.readFile("queries/" + file);
 			String query = header + content;
 			query = String.format(query,args);		
 			UpdateAction.parseExecute(query, this.localDb);
