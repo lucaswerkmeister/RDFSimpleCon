@@ -71,4 +71,13 @@ public class RDFSubject
 	{
 		this.add(domain.getProperty(prop),lit);
 	}
+	
+	public String getIRI()
+	{
+	  return this.iri;
+	}
+	public String toString()
+	{
+	  return "<" + this.iri + ">";	
+	}
 }
