@@ -7,11 +7,17 @@ public class RDFType
 	private Domain domain;
 	private String iri;
 	//private HashMap<String,RDFType> parents = new HashMap<String,RDFType>();
+	
 	public RDFType(Domain domain,String iri)
+	{
+		this(domain,iri,true);
+	}
+	
+	public RDFType(Domain domain,String iri,boolean check)
 	{
 		this.domain = domain;
 		this.iri = domain.getConn().expand(iri);
-		domain.addType(this.iri,this);
+		domain.addType(this.iri,this,check);
 		domain.getConn().add(this.iri,"rdf:type","owl:Class");
 	}
 	
