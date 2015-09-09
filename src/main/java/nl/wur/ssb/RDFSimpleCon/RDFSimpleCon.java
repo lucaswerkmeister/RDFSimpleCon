@@ -155,6 +155,10 @@ public class RDFSimpleCon
 		RDFDataMgr.read(dataset,file.getContent().getInputStream(),format.getLang());		
 	}
 	
+	public RDFSimpleCon(Model model)
+	{
+	  this.localDb = model;
+	}
 	/*public RDFConnection(String dir,String graph,boolean local)
 	{
 		Dataset dataset = TDBFactory.createDataset(dir);
@@ -269,6 +273,16 @@ public class RDFSimpleCon
 			return new Iteration<ResultLine>(new ResultIterator(new Iteration<HashMap<String,RDFNode>>(res.iterator())));
 		}
 	}
+	
+  public RDFSimpleCon runConstruct(String queryFile,Object ... args) throws Exception
+  {
+    queryFile = "queries/" + queryFile;
+    QueryExecution qe = createQueryFromFile(queryFile,args);
+    Model result = qe.execConstruct();
+    qe.close();
+    return new RDFSimpleCon(result);
+  }
+
 	
 	public ResultSet runQueryDirect(String query) throws Exception
 	{
