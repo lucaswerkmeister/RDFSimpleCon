@@ -3,21 +3,30 @@ package nl.wur.ssb.RDFSimpleCon;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.rdf.model.RDFNode;
 
 public class ResultIterator implements Iterator<ResultLine>
 {
 	private Iterator<HashMap<String,RDFNode>> resultSet;
+	private QueryExecution qe;
 
-	public ResultIterator(Iteration<HashMap<String,RDFNode>> resultSet)
+	public ResultIterator(Iteration<HashMap<String,RDFNode>> resultSet,QueryExecution qe)
 	{
 		this.resultSet = resultSet.iterator();
+		this.qe = qe;
 	}
 
 	@Override
 	public boolean hasNext()
 	{
-		return resultSet.hasNext();
+		if(!resultSet.hasNext())
+		{
+			if(qe != null)
+				qe.close();
+			return false;
+		}
+		return true;
 	}
 
 	@Override

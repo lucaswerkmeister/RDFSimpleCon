@@ -1,6 +1,7 @@
 package nl.wur.ssb.RDFSimpleCon;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 
 import org.apache.commons.vfs2.FileObject;
@@ -35,6 +36,17 @@ public class Util
 		  System.out.println( children[ i ].getName().getBaseName() );
 		}*/
 		return VFS.getManager().resolveFile(uri);
+	}
+	
+	public static String readFile(String file) throws IOException
+	{
+		FileObject inFile = Util.getResourceFile(file);
+		InputStream input = inFile.getContent().getInputStream();
+		byte all[] = new byte[(int)inFile.getContent().getSize()];
+		input.read(all);
+		String string = new String(all);		
+		input.close();
+		return string;
 	}
 
 }

@@ -181,18 +181,23 @@ public class RDFSimpleCon
 	{
     Object toPass[] = args;
     
-		String header = this.readFile("queries/header.txt");
-		String content = this.readFile(queryFile);
+		String header = Util.readFile("queries/header.txt");
+		String content = Util.readFile(queryFile);
 		String queryString = header + content;
-		 
-    if(Pattern.compile("^((FROM)|(WITH)|(USING))\\s+<\\%\\d+\\$S>.*$",Pattern.MULTILINE).matcher(queryString.toUpperCase()).find())
+		Pattern path = Pattern.compile("^((FRoM)|(WITH)|(USING))\\s+<\\%\\d+\\$S>.*$",Pattern.MULTILINE | Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
+    if(path.matcher(queryString).find())
     {
-     	toPass = new Object[args.length + 1];
+   	  toPass = new Object[args.length + 1];
       System.arraycopy(args,0,toPass,1,args.length);
       toPass[0] = this.graph;
       args = toPass;
+    	if(this.graph == null)
+    	{
+    		queryString = path.matcher(queryString).replaceAll("");
+    	}
     }
-    queryString = String.format(queryString,args);			
+    queryString = String.format(queryString,args);	
+    //System.out.println(queryString);
 	  return createQuery(queryString);
 	}
 	
@@ -255,7 +260,7 @@ public class RDFSimpleCon
 		ResultIteratorRaw walker = new ResultIteratorRaw(result);// new Iteration<HashMap<String,RDFNode>>
 		if(preload == false)
 		{
-			return new Iteration<ResultLine>(new ResultIterator(new Iteration<HashMap<String,RDFNode>>(walker)));
+			return new Iteration<ResultLine>(new ResultIterator(new Iteration<HashMap<String,RDFNode>>(walker),qe));
 		}
 		else
 		{
@@ -266,7 +271,7 @@ public class RDFSimpleCon
 			}
 			qe.close();
 			System.out.println("time: " + (System.currentTimeMillis() - millis) + " for query " + queryFile); 
-			return new Iteration<ResultLine>(new ResultIterator(new Iteration<HashMap<String,RDFNode>>(res.iterator())));
+			return new Iteration<ResultLine>(new ResultIterator(new Iteration<HashMap<String,RDFNode>>(res.iterator()),null));
 		}
 	}
 	
@@ -275,18 +280,7 @@ public class RDFSimpleCon
 		QueryExecution qe = createQuery(query);
 		return qe.execSelect();
 	}
-		
-	private String readFile(String file) throws IOException
-	{
-		FileObject inFile = Util.getResourceFile(file);
-		InputStream input = inFile.getContent().getInputStream();
-		byte all[] = new byte[(int)inFile.getContent().getSize()];
-		input.read(all);
-		String string = new String(all);		
-		input.close();
-		return string;
-	}
-	
+			
 	public String expand(String in)
 	{
 		String toRet = localDb.expandPrefix(in);
@@ -397,8 +391,8 @@ public class RDFSimpleCon
   {
 		try
 		{
-			String header = this.readFile("queries/header.txt");
-			String content = this.readFile("queries/" + file);
+			String header = Util.readFile("queries/header.txt");
+			String content = Util.readFile("queries/" + file);
 			String query = header + content;
 			query = String.format(query,args);		
 			UpdateAction.parseExecute(query, this.localDb);
