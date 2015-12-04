@@ -31,6 +31,19 @@ public class ResultLine
 	  return node.asResource().getURI();
 	}
 	
+	public String asString(String var)
+	{
+	  RDFNode node = line.get(var);
+	  if(node == null)
+	  	return null;
+	  if(node.isLiteral())
+	  	return node.asLiteral().getString();
+	  else if(node.isResource())
+	  	return node.asResource().getURI();
+	  else
+	  	return node.asNode().toString();
+	}
+	
 	public String getLitString(String var)
 	{
 	  RDFNode node = line.get(var);
