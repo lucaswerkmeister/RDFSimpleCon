@@ -343,7 +343,7 @@ public class RDFSimpleCon
 	{
 		synchronized(this)
 		{
-		  return this.localDb.contains(this.localDb.createResource(expand(subj)),this.localDb.createProperty(expand(pred)),this.localDb.createTypedLiteral(lit));
+		  return this.localDb.contains(this.localDb.createResource(expand(subj)),this.localDb.createProperty(expand(pred)),this.localDb.createLiteral(lit));
 	  }
 	}
 	public boolean containsLit(String subj,String pred,int lit)
