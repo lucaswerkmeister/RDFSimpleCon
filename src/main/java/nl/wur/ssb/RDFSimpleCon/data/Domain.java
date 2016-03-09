@@ -34,7 +34,7 @@ public class Domain
 	{
 		iri = this.getConn().expand(iri);
 		if(!this.propMap.containsKey(iri))
-			throw new RuntimeException("Property" + iri + "not defined");
+			throw new RuntimeException("Property " + iri + " not defined");
 		return this.propMap.get(iri);
 	}
 	
@@ -56,5 +56,20 @@ public class Domain
 		if(!this.typeMap.containsKey(iri))
 			throw new RuntimeException("Type" + iri + "not defined");
 		return this.typeMap.get(iri);
+	}
+	
+	public RDFType createType(String iri)
+	{
+		return new RDFType(this,iri);
+	}
+
+	public Property createProperty(String iri)
+	{
+		return new Property(this,iri);
+	}
+	
+	public Property createProperty(String iri,boolean check)
+	{
+		return new Property(this,iri,check);
 	}
 }

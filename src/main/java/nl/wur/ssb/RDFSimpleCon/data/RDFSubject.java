@@ -26,6 +26,10 @@ public class RDFSubject
 	{
 		this.add(domain.getProperty(prop),object);
 	}
+	public void addExtRef(String prop,String iri)
+	{
+		this.domain.getConn().add(this.iri,domain.getProperty(prop).getRDFString(),iri);
+	}
 	
 	public void addLit(Property prop,String lit)
 	{
@@ -70,5 +74,15 @@ public class RDFSubject
 	public void add(String prop,boolean lit)
 	{
 		this.add(domain.getProperty(prop),lit);
+	}
+	
+	public String toString()
+	{
+		return this.iri;
+	}
+	
+	public String getIri()
+	{
+		return this.iri;
 	}
 }

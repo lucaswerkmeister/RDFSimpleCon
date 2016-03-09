@@ -1,6 +1,5 @@
 package nl.wur.ssb.RDFSimpleCon.data;
 
-import java.util.HashMap;
 
 public class RDFType
 {
@@ -30,5 +29,10 @@ public class RDFType
 	public String getRDFString()
 	{
 		return this.iri;
+	}
+	
+	public RDFSubject createObject(String iri)
+	{
+		return new RDFSubject(this.domain,iri,this);
 	}
 }
