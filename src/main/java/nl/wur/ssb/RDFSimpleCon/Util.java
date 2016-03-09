@@ -4,49 +4,20 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.vfs2.FileObject;
 import org.apache.commons.vfs2.VFS;
 
 public class Util
 {
-	public static FileObject getResourceFile(String file) throws IOException
+	public static InputStream getResourceFile(String file) throws IOException
 	{
-	  String uri = null;
-		URL url = Util.class.getClassLoader().getResource(".");
-		if(url == null)
-		{
-   		uri = Util.class.getClassLoader().getResource("nl/wur/ssb/RDFSimpleCon/Util.class").toString();
-			uri = uri.substring(0,uri.length() - "nl/wur/ssb/RDFSimpleCon/Util.class".length());
-		}
-		else
-			uri = url.toString();
-		//uri = uri.substring(0,uri.length() - "nl/wur/ssb/util/Util.class".length());
-		if(uri.endsWith("bin/"))
-			uri = uri.substring(0,uri.length() - "bin/".length()) + "resource/";
-		else if(uri.endsWith("target/classes/"))
-			uri = uri.substring(0,uri.length() - "target/classes/".length()) + "resource/";
-		else if(uri.endsWith("target/test-classes/"))
-			uri = uri.substring(0,uri.length() - "target/test-classes/".length()) + "resource/";
-		uri = uri + file;
-		/*
-		FileObject[] children = jarFile.getChildren();
-		System.out.println( "Children of " + jarFile.getName().getURI() );
-		for ( int i = 0; i < children.length; i++ )
-		{
-		  System.out.println( children[ i ].getName().getBaseName() );
-		}*/
-		return VFS.getManager().resolveFile(uri);
+		return Util.class.getResourceAsStream("/" + file);
 	}
 	
 	public static String readFile(String file) throws IOException
 	{
-		FileObject inFile = Util.getResourceFile(file);
-		InputStream input = inFile.getContent().getInputStream();
-		byte all[] = new byte[(int)inFile.getContent().getSize()];
-		input.read(all);
-		String string = new String(all);		
-		input.close();
-		return string;
+		return IOUtils.toString(Util.getResourceFile(file));
 	}
 
 }
