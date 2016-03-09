@@ -18,6 +18,12 @@ public class RDFSubject
 	{
 		this(domain,iri,domain.getType(type));
 	}
+	
+	public void addType(RDFType type)
+	{
+	    domain.getConn().add(iri, "rdf:type",type.getRDFString());
+	}
+	
 	public void add(Property prop,RDFSubject object)
 	{
 		this.domain.getConn().add(this.iri,prop.getRDFString(),object.iri);
@@ -76,13 +82,12 @@ public class RDFSubject
 		this.add(domain.getProperty(prop),lit);
 	}
 	
+	public String getIRI()
+	{
+	  return this.iri;
+	}
 	public String toString()
 	{
-		return this.iri;
-	}
-	
-	public String getIri()
-	{
-		return this.iri;
+	  return "<" + this.iri + ">";	
 	}
 }
