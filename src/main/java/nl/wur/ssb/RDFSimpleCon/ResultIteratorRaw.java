@@ -3,9 +3,9 @@ package nl.wur.ssb.RDFSimpleCon;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import com.hp.hpl.jena.query.QuerySolution;
-import com.hp.hpl.jena.query.ResultSet;
-import com.hp.hpl.jena.rdf.model.RDFNode;
+import org.apache.jena.query.QuerySolution;
+import org.apache.jena.query.ResultSet;
+import org.apache.jena.rdf.model.RDFNode;
 
 class ResultIteratorRaw implements Iterator<HashMap<String,RDFNode>>
 {

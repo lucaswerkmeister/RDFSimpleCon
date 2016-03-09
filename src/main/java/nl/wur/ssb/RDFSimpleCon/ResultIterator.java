@@ -3,8 +3,8 @@ package nl.wur.ssb.RDFSimpleCon;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import com.hp.hpl.jena.query.QueryExecution;
-import com.hp.hpl.jena.rdf.model.RDFNode;
+import org.apache.jena.query.QueryExecution;
+import org.apache.jena.rdf.model.RDFNode;
 
 public class ResultIterator implements Iterator<ResultLine>
 {

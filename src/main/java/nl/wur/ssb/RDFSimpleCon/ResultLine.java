@@ -2,8 +2,8 @@ package nl.wur.ssb.RDFSimpleCon;
 
 import java.util.HashMap;
 
-import com.hp.hpl.jena.rdf.model.Literal;
-import com.hp.hpl.jena.rdf.model.RDFNode;
+import org.apache.jena.rdf.model.Literal;
+import org.apache.jena.rdf.model.RDFNode;
 
 public class ResultLine
 {

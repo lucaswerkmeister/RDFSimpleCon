@@ -3,9 +3,8 @@ package nl.wur.ssb.RDFSimpleCon.test;
 import static org.junit.Assert.assertEquals;
 import nl.wur.ssb.RDFSimpleCon.RDFSimpleCon;
 
+import org.apache.jena.query.ResultSet;
 import org.junit.Test;
-
-import com.hp.hpl.jena.query.ResultSet;
 
 public class LiteralTest
 {
