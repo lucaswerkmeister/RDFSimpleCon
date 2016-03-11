@@ -19,13 +19,12 @@ public class Util
   {
     return IOUtils.toString(Util.getResourceFile(file));
   }
-
   
   public static String prepareFileFromJar(String file) throws IOException
   {
     return Util.prepareFileIntFromJar(file,false,true);
   }
-
+  
   public static String prepareBinaryFromJar(String file) throws IOException
   {
     return Util.prepareFileIntFromJar(file,true,true);
@@ -39,20 +38,23 @@ public class Util
   public static void cleanTemp() throws IOException
   {
     String tempPath = Util.getTempPath();
-    (new File(tempPath)).delete();    
+    (new File(tempPath)).delete();
   }
   
-  private static String prepareFileIntFromJar(String file, boolean isBinary,boolean doCreate) throws IOException
+  private static String prepareFileIntFromJar(String file, boolean isBinary, boolean doCreate) throws IOException
   {
     // Copies to location next to JAR file
     String tempPath = Util.getTempPath();
     (new File(tempPath)).mkdir();
     File outBinFileName = new File(tempPath + file.substring(Math.max(0,file.lastIndexOf("/"))));
-    if(!outBinFileName.exists() && doCreate)
+    if (!outBinFileName.exists() && doCreate)
     {
+      System.out.println(file.replaceAll("\\{OS\\}",getOs()) + "\n" + outBinFileName);
       InputStream stream = Util.getResourceFile(file.replaceAll("\\{OS\\}",getOs()));
-      IOUtils.copy(stream,new FileOutputStream(outBinFileName));
-      if(isBinary)
+      FileOutputStream output = new FileOutputStream(outBinFileName);
+      IOUtils.copy(stream, output);
+      output.close();
+      if (isBinary)
         outBinFileName.setExecutable(true);
       System.out.println("Creating file: " + outBinFileName.toString());
     }
@@ -63,7 +65,7 @@ public class Util
   {
     String path = Util.class.getProtectionDomain().getCodeSource().getLocation().getPath();
     String jarPath = URLDecoder.decode(path,"UTF-8").toString();
-    return jarPath.substring(0,jarPath.lastIndexOf("/")) + "/temp/";  
+    return jarPath.substring(0,jarPath.lastIndexOf("/")) + "/temp/";
   }
   
   public static String getOs()
