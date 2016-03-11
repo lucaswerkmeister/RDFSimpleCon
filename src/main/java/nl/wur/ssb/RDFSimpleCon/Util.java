@@ -67,6 +67,13 @@ public class Util
     String jarPath = URLDecoder.decode(path,"UTF-8").toString();
     return jarPath.substring(0,jarPath.lastIndexOf("/")) + "/temp/";
   }
+
+  public static String getBigResource(Class clazz,String basePathName,String resourse) throws IOException
+  {
+    String path = clazz.getProtectionDomain().getCodeSource().getLocation().getPath();
+    String jarPath = URLDecoder.decode(path,"UTF-8").toString();
+    return jarPath.replaceAll(basePathName + ".*" ,basePathName + "/" + resourse);
+  }
   
   public static String getOs()
   {
