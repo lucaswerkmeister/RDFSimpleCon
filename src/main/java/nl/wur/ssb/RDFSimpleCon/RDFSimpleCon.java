@@ -23,6 +23,7 @@ import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.shared.PrefixMapping;
+import org.apache.jena.sparql.engine.http.QueryExceptionHTTP;
 import org.apache.jena.tdb.TDBFactory;
 import org.apache.jena.update.UpdateAction;
 
@@ -188,7 +189,7 @@ public class RDFSimpleCon
    	  toPass = new Object[args.length + 1];
       System.arraycopy(args,0,toPass,1,args.length);
       toPass[0] = this.graph;
-      args = toPass;
+      args = toPass; 
     	if(this.graph == null)
     	{
     		queryString = path.matcher(queryString).replaceAll("");
@@ -254,7 +255,16 @@ public class RDFSimpleCon
 	  queryFile = "queries/" + queryFile;
 		QueryExecution qe = createQueryFromFile(queryFile,args);
 		long millis = System.currentTimeMillis();
-		ResultSet result = qe.execSelect();
+		ResultSet result = null;
+		try
+		{
+		  result = qe.execSelect();
+		}
+		catch(QueryExceptionHTTP e)
+		{
+			System.out.println(e.getResponseMessage());
+			throw e;
+		}
 		ResultIteratorRaw walker = new ResultIteratorRaw(result);// new Iteration<HashMap<String,RDFNode>>
 		if(preload == false)
 		{
@@ -406,6 +416,15 @@ public class RDFSimpleCon
 		this.localDb.add(other.localDb.listStatements());
 	}
 	
+	public boolean containsAll(RDFSimpleCon other)
+	{
+		return this.localDb.containsAll(other.localDb);
+	}
+	
+	public boolean containsAny(RDFSimpleCon other)
+	{
+		return this.localDb.containsAny(other.localDb);
+	}
 }
 
 

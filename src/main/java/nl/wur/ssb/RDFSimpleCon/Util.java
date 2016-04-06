@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.net.URLDecoder;
 
 import org.apache.commons.io.IOUtils;
@@ -13,6 +14,14 @@ public class Util
   public static InputStream getResourceFile(String file) throws IOException
   {
     return Util.class.getResourceAsStream("/" + file);
+  }
+  
+  public static String getResourcePath(String file) throws IOException
+  {
+  	URL url =  Util.class.getResource("/" + file);
+  	if(url == null)
+  		throw new IOException("resource file not found: " + file);
+  	return url.toString().replaceAll("file:/","file:///");
   }
   
   public static String readFile(String file) throws IOException
