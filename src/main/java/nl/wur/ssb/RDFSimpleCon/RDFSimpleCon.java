@@ -188,8 +188,8 @@ public class RDFSimpleCon
     if(Pattern.compile("^((FROM)|(WITH)|(USING))\\s+<\\%\\d+\\$S>.*$",Pattern.MULTILINE).matcher(queryString.toUpperCase()).find())
     {
      	toPass = new Object[args.length + 1];
-      System.arraycopy(args,0,toPass,1,args.length);
-      toPass[0] = this.graph;
+      System.arraycopy(args,0,toPass,0,args.length);
+      toPass[args.length] = this.graph;
       args = toPass;
     }
     queryString = String.format(queryString,args);			
