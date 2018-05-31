@@ -42,6 +42,8 @@ public class RDFSimpleCon
 	private int counter = 0;
 	private HashMap<Long,Integer> threadMap = new HashMap<Long,Integer>();
 	private int maxThreadCount = 1;
+
+	private static final Pattern FROM_WITH_USING_PATTERN = Pattern.compile("^((FROM)|(WITH)|(USING))\\s+<\\%\\d+\\$S>.*$",Pattern.MULTILINE);
 	
 	public RDFSimpleCon(String config, String tmpDir) throws Exception
 	{
@@ -184,8 +186,12 @@ public class RDFSimpleCon
 		String header = this.readFile("queries/header.txt");
 		String content = this.readFile(queryFile);
 		String queryString = header + content;
-		 
-    if(Pattern.compile("^((FROM)|(WITH)|(USING))\\s+<\\%\\d+\\$S>.*$",Pattern.MULTILINE).matcher(queryString.toUpperCase()).find())
+
+		if(this.graph == null) {
+			queryString = FROM_WITH_USING_PATTERN.matcher(queryString).replaceAll("");
+		}
+
+    if(FROM_WITH_USING_PATTERN.matcher(queryString.toUpperCase()).find())
     {
      	toPass = new Object[args.length + 1];
       System.arraycopy(args,0,toPass,0,args.length);
