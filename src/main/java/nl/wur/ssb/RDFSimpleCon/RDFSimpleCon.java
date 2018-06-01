@@ -43,7 +43,7 @@ public class RDFSimpleCon
 	private HashMap<Long,Integer> threadMap = new HashMap<Long,Integer>();
 	private int maxThreadCount = 1;
 
-	private static final Pattern FROM_WITH_USING_PATTERN = Pattern.compile("^((FROM)|(WITH)|(USING))\\s+<\\%\\d+\\$S>.*$",Pattern.MULTILINE);
+	private static final Pattern FROM_WITH_USING_PATTERN = Pattern.compile("^((FROM)|(WITH)|(USING))\\s+<\\%\\d+\\$S>.*$",Pattern.MULTILINE|Pattern.CASE_INSENSITIVE);
 	
 	public RDFSimpleCon(String config, String tmpDir) throws Exception
 	{
@@ -191,7 +191,7 @@ public class RDFSimpleCon
 			queryString = FROM_WITH_USING_PATTERN.matcher(queryString).replaceAll("");
 		}
 
-    if(FROM_WITH_USING_PATTERN.matcher(queryString.toUpperCase()).find())
+    if(FROM_WITH_USING_PATTERN.matcher(queryString).find())
     {
      	toPass = new Object[args.length + 1];
       System.arraycopy(args,0,toPass,0,args.length);
