@@ -33,6 +33,7 @@ import com.hp.hpl.jena.update.UpdateAction;
 public class RDFSimpleCon
 {
 	private Model localDb;
+	private String protocol;
 	private String server;
 	private int port;
 	private String finalLocation;
@@ -108,20 +109,22 @@ public class RDFSimpleCon
 		  	  config = temp[1];
 		    }
 
-				Matcher matcher = Pattern.compile("http://(.+):([\\d]+)/(.*)").matcher(config);
+				Matcher matcher = Pattern.compile("(https?)://(.+):([\\d]+)/(.*)").matcher(config);
 				if(!matcher.matches())
 				{
-					matcher = Pattern.compile("http://(.+)/(.*)").matcher(config);
+					matcher = Pattern.compile("(https?)://(.+)/(.*)").matcher(config);
 					matcher.matches();
-					this.server = matcher.group(1);
-					this.port = 80;
-					this.finalLocation = matcher.group(2);
+					this.protocol = matcher.group(1);
+					this.server = matcher.group(2);
+					this.port = protocol.equals("https") ? 443 : 80;
+					this.finalLocation = matcher.group(3);
 				}
 				else
 				{
-					this.server = matcher.group(1);
-					this.port = Integer.parseInt(matcher.group(2));
-					this.finalLocation = matcher.group(3);
+					this.protocol = matcher.group(1);
+					this.server = matcher.group(2);
+					this.port = Integer.parseInt(matcher.group(3));
+					this.finalLocation = matcher.group(4);
 				}
 		    if(username != null)
 		    	this.setAuthen(username,pass);
@@ -209,7 +212,7 @@ public class RDFSimpleCon
 	    {
 	  	  port = this.getThreadPortNum();
 	    }
-	    String server = "http://" + this.server + ":" + port + "/" + this.finalLocation;
+	    String server = this.protocol + "://" + this.server + ":" + port + "/" + this.finalLocation;
   		QueryExecution qe = QueryExecutionFactory.sparqlService(server,query,authen);
 	  	qe.setTimeout(7,TimeUnit.DAYS);
 		  return qe;
