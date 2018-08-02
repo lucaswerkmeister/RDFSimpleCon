@@ -22,14 +22,17 @@ public class TaskExecuter
 		executor = Executors.newFixedThreadPool(this.maxThreadCount);
 	}
 	
-  public int runEachAsTask(Iterable<ResultLine> totalSet,ResultHandler resultHandler) throws Exception
+  public int runEachAsTask(Iterable<ResultLine> totalSet,final ResultHandler resultHandler) throws Exception
   {
   	int count = 1;
   	for (ResultLine item : totalSet)
   	{
-  		this.executeTask((Task)(Object[] data) -> {
-  			resultHandler.handleResult((ResultLine)data[0],((Integer)data[1]).intValue());
-  		},item,count++);
+  		this.executeTask(new Task() {
+			@Override
+			public void run(Object[] data) throws Exception {
+				resultHandler.handleResult((ResultLine)data[0],((Integer)data[1]).intValue());
+			}
+		},item,count++);
   	}
   	return count - 1;
   }
