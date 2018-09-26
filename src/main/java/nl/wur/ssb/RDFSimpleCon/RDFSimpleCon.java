@@ -252,28 +252,21 @@ public class RDFSimpleCon
 		return res;		
 	}
 
-	public Iterable<ResultLine> runQuery(String queryFile,boolean preload,Object ... args) throws Exception
+	public Iterable<ResultLine> runQuery(String queryFile,Object ... args) throws Exception
 	{
 		queryFile = "queries/" + queryFile;
 		QueryExecution qe = createQuery(queryFile,args);
 		long millis = System.currentTimeMillis();
 		ResultSet result = qe.execSelect();
 		ResultIteratorRaw walker = new ResultIteratorRaw(result);// new Iteration<HashMap<String,RDFNode>>
-		if(preload == false)
+		LinkedList<HashMap<String,RDFNode>> res = new LinkedList<HashMap<String,RDFNode>>();
+		for(HashMap<String,RDFNode> item : new Iteration<HashMap<String,RDFNode>>(walker))
 		{
-			return new Iteration<ResultLine>(new ResultIterator(new Iteration<HashMap<String,RDFNode>>(walker)));
+			res.add(item);
 		}
-		else
-		{
-			LinkedList<HashMap<String,RDFNode>> res = new LinkedList<HashMap<String,RDFNode>>();
-			for(HashMap<String,RDFNode> item : new Iteration<HashMap<String,RDFNode>>(walker))
-			{
-				res.add(item);
-			}
-			qe.close();
-			System.out.println("time: " + (System.currentTimeMillis() - millis) + " for query " + queryFile); 
-			return new Iteration<ResultLine>(new ResultIterator(new Iteration<HashMap<String,RDFNode>>(res.iterator())));
-		}
+		qe.close();
+		System.out.println("time: " + (System.currentTimeMillis() - millis) + " for query " + queryFile); 
+		return new Iteration<ResultLine>(new ResultIterator(new Iteration<HashMap<String,RDFNode>>(res.iterator())));
 	}
 		
 	private String readFile(String file) throws IOException
